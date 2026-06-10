@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Chat - trabalho de criptografia com RSA</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .msg-box { 
+      margin-bottom: 15px; 
+      padding: 10px; 
+      border: 1px solid #ccc; 
+      border-radius: 5px; 
+      background-color: #f9f9f9;
+    }
+    .cipher { 
+      font-family: monospace; 
+      font-size: 0.85em; 
+      color: #d9534f; 
+      word-wrap: break-word; 
+      background: #f1f1f1;
+      padding: 5px;
+      border-radius: 3px;
+    }
+    .plain { 
+      font-size: 1.1em; 
+      color: #333; 
+      margin-top: 8px; 
+    }
+    hr { margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <h2>Interface do Chat (Webhooks + RSA)</h2>
+  
+  <input id="name" placeholder="Seu nome" value="Escreva aqui o nome do usuario">
+  <input id="room" placeholder="Nome da sala" value="sala1">
+  <button onclick="connectLocal()">Conectar ao Agente Local</button>
+  <div id="status" style="margin-top: 10px;"></div>
+  
+  <hr>
+  
+  <input id="msg" placeholder="Digite uma mensagem" size="40">
+  <button onclick="send()">Enviar</button>
+  
+  <hr>
+  <div id="log"></div>
+
+  <script>
+    var ws;
+    var myName;
+    var currentRoom;
+
+    function connectLocal() {
+      myName = document.getElementById("name").value;
+      currentRoom = document.getElementById("room").value;
+      
+      // Conecta no seu script Python local (client_app.py) na porta 9001
+      ws = new WebSocket("ws://localhost:9001/ws_local");
+      
+      ws.onopen = function() {
+        document.getElementById("status").innerHTML = `<b>Conectado ao cliente local — Sala: ${currentRoom}</b>`;
+        document.getElementById("log").innerHTML = "";
+        
+        // Pede para o Python local registrar o webhook no servidor principal
+        ws.send(JSON.stringify({ action: "register", room: currentRoom }));
+      };
+
+      ws.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const logDiv = document.getElementById("log");
+        const msgBox = document.createElement("div");
+        msgBox.className = "msg-box";
+
+        if (data.type === "history") {
+          msgBox.innerHTML = `<div class="plain" style="color: gray; font-style: italic;">[histórico] ${data.content}</div>`;
+        } else {
+          // Aqui exibimos as DUAS versões da mensagem, conforme a exigência do trabalho
+          msgBox.innerHTML = `
+            <div class="cipher"><b>🔒 Interceptado (RSA):</b><br>${data.ciphertext}</div>
+            <div class="plain"><b>🔓 Mensagem:</b> ${data.plaintext}</div>
+          `;
+        }
+        logDiv.appendChild(msgBox);
+      };
+    }
+
+    function send() {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        const text = myName + ": " + document.getElementById("msg").value;
+        // Envia a intenção de mensagem para o app local repassar via HTTP POST
+        ws.send(JSON.stringify({ action: "send", room: currentRoom, msg: text }));
+        document.getElementById("msg").value = "";
+      } else {
+        alert("Conecte no Agente Local primeiro!");
+      }
+    }
+  </script>
+</body>
+</html>
