@@ -1,8 +1,6 @@
 import os
 
-# =====================================================================
-# CAMADAS 1, 2 e 3: O NÚCLEO DO SHA-256 
-# =====================================================================
+# Nucleo do SHA
 K = (
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
     0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
@@ -74,9 +72,7 @@ def validar_arquivo(caminho_arquivo: str, hash_fornecido: str) -> bool:
     return obter_hash_de_arquivo(caminho_arquivo).lower() == hash_fornecido.lower()
 
 
-# =====================================================================
-# CAMADA 4: NOVA INTERFACE COM LEITURA AUTOMÁTICA DA PASTA
-# =====================================================================
+# Leitura do arquivo
 
 def escanear_arquivos_txt():
     """Descobre a pasta atual do script e lista todos os arquivos .txt nela."""

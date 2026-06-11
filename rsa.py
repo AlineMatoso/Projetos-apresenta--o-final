@@ -1,9 +1,7 @@
 import random
 import math
 
-# =====================================================================
-# CAMADA 1: UTILITÁRIOS MATEMÁTICOS BASE
-# =====================================================================
+# base matematica
 
 def eh_primo(num: int) -> bool:
     """Verifica se um número é primo usando o método da raiz quadrada."""
@@ -35,9 +33,7 @@ def inverso_modular(e: int, phi: int) -> int:
     return x2
 
 
-# =====================================================================
-# CAMADA 2: GERENCIAMENTO DE CHAVES
-# =====================================================================
+# gerenciamento das chaves
 
 def gerar_par_de_chaves(p: int, q: int) -> tuple:
     """Gera as chaves pública e privada a partir de dois números primos."""
@@ -64,9 +60,7 @@ def gerar_par_de_chaves(p: int, q: int) -> tuple:
     return ((e, n), (d, n))
 
 
-# =====================================================================
-# CAMADA 3: PROCESSAMENTO DA CIFRA
-# =====================================================================
+# processamento da cifra
 
 def criptografar(chave_publica: tuple, texto_puro: str) -> list:
     """Criptografa uma string usando a fórmula: C = M^e mod n."""
@@ -87,57 +81,54 @@ def descriptografar(chave_privada: tuple, texto_cifrado: list) -> str:
     return texto_puro
 
 
-# =====================================================================
-# CAMADA 4: INTERFACE DE EXECUÇÃO DO USUÁRIO
-# =====================================================================
+# execucao + comunicacao com usuario
 
 def executar_sistema_rsa():
-    print("=" * 60)
-    print("     SISTEMA ACADÊMICO DE CRIPTOGRAFIA RSA - INTERATIVO     ")
-    print("=" * 60)
     
-    # Para fins educacionais e suporte a caracteres ASCII estendidos, 
-    # usamos primos pequenos predefinidos, mas que garantem estabilidade.
+    print("Executando RSA ")
+    
+    
+    # Garantir estabilidade com primos pequenos predefinidos
+
     p = 127
     q = 131
     
-    print(f"[⚙️ Configuração] Gerando ambiente seguro...")
-    print(f" -> Escolhendo primos bases: p = {p}, q = {q}")
+    print(f"Escolhendo primos bases: p = {p}, q = {q}")
     
     try:
         publica, privada = gerar_par_de_chaves(p, q)
-        print(f" -> Chave Pública gerada (e, n): {publica}")
-        print(f" -> Chave Privada gerada (d, n): [OCULTA PARA SEGURANÇA]")
-        print("-" * 60)
+        print(f"Chave Pública gerada (e, n): {publica}")
+        print(f"Chave Privada gerada (d, n): nao exibimos")
+
         
         # 1. Entrada de dados do Usuário
         mensagem_usuario = input("Digite a mensagem que deseja criptografar: ")
         
         if not mensagem_usuario:
-            print("[Erro] A mensagem não pode ser vazia.")
+            print("A mensagem não pode ser vazia.")
             return
 
-        print("\n--- INICIANDO FLUXO CRIPTOGRÁFICO ---")
+        print("\n Iniciando criptografia")
         
         # 2. Criptografia
-        print("\n[Passo 1] Criptografando o texto...")
+        print("\n Criptografando o texto...")
         mensagem_protegida = criptografar(publica, mensagem_usuario)
-        print(f" -> Mensagem cifrada (numérica): {mensagem_protegida}")
-        print(" -> Status: O texto agora está completamente ilegível para interceptores.")
+        print(f" Mensagem cifrada (numérica): {mensagem_protegida}")
+        print(" Status: Ok, texto ilegivel para hackers! kkkk")
         
         # 3. Descriptografia
-        print("\n[Passo 2] Descriptografando com a Chave Privada correspondente...")
+        print("\n Descriptografando")
         input("Pressione ENTER para autorizar o receptor a ler a mensagem com a chave privada...")
         
         mensagem_recuperada = descriptografar(privada, mensagem_protegida)
         
         # 4. Resultado Final
-        print("\n[Sucesso] Processo Concluído!")
-        print(f" -> Mensagem original recuperada: '{mensagem_recuperada}'")
-        print("=" * 60)
+        print("\n Processo Concluído!")
+        print(f"Mensagem original recuperada: '{mensagem_recuperada}'")
+        
         
     except ValueError as error:
-        print(f"\n[Erro no Sistema]: {error}")
+        print(f"\nErro no Sistema: {error}")
 
 if __name__ == "__main__":
     executar_sistema_rsa()

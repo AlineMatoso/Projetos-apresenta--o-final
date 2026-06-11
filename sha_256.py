@@ -1,9 +1,6 @@
-# =====================================================================
-# CAMADA 1: CONSTANTES MATEMÁTICAS SHA-256
-# =====================================================================
+# Constantes
 
-# As 64 constantes representam os 32 primeiros bits das partes fracionárias 
-# das raízes cúbicas dos primeiros 64 números primos.
+# As 64 constantes representam os 32 primeiros bits das partes fracionárias das raízes cúbicas dos primeiros 64 números primos.
 K = (
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
     0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
@@ -21,9 +18,7 @@ H_INICIAL = (
     0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
 )
 
-# =====================================================================
-# CAMADA 2: OPERAÇÕES LÓGICAS (BITWISE)
-# =====================================================================
+# Operacoes logicas
 
 def rotr(x: int, n: int) -> int:
     """Rotaciona os bits para a direita (Right Rotate)."""
@@ -49,9 +44,7 @@ def sigma0_lower(x: int) -> int:
 def sigma1_lower(x: int) -> int:
     return rotr(x, 17) ^ rotr(x, 19) ^ (x >> 10)
 
-# =====================================================================
-# CAMADA 3: O ALGORITMO PRINCIPAL
-# =====================================================================
+# base principal
 
 def gerar_sha256(mensagem_texto: str) -> str:
     """Converte a string de entrada para um hash SHA-256 hexadecimal."""
@@ -118,33 +111,25 @@ def gerar_sha256(mensagem_texto: str) -> str:
     hash_final = ''.join(f'{valor:08x}' for valor in h)
     return hash_final
 
-# =====================================================================
-# CAMADA 4: INTERFACE DE EXECUÇÃO DO USUÁRIO
-# =====================================================================
+# execucao do sistema e comunicacao com usuário. 
 
 def executar_sistema_hash():
-    print("=" * 60)
-    print("        LABORATÓRIO DE HASH: ALGORITMO SHA-256        ")
-    print("=" * 60)
-    print("[Nota do Professor] O processo que ocorrerá aqui é de mão única.\n")
-    
+    print(" Execução do SHA-256    ")
     mensagem_usuario = input("Digite a mensagem, documento ou senha para gerar o Hash: ")
     
     if not mensagem_usuario:
         print("[Erro] O texto de entrada não pode ser vazio.")
         return
         
-    print("\n[Passo 1] Quebrando a mensagem em bits e adicionando padding...")
-    print("[Passo 2] Rodando 64 rodadas de operações bitwise...")
+    print("\n Quebrando a mensagem em bits e adicionando padding...")
+    print(" Rodando 64 rodadas de operações bitwise...")
     
     # Chama nossa implementação construída do zero
     resultado_hash = gerar_sha256(mensagem_usuario)
     
-    print("-" * 60)
     print(f"Texto Original : '{mensagem_usuario}'")
     print(f"Hash SHA-256   : {resultado_hash}")
     print("Tamanho        : 256 Bits (64 caracteres hexadecimais)")
-    print("-" * 60)
 
 if __name__ == "__main__":
     executar_sistema_hash()
